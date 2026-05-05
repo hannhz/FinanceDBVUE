@@ -1,15 +1,11 @@
 ﻿<template>
   <div>
-    <!-- Page Header -->
     <div class="page-header">
       <h1 class="page-title">Dashboard Keuangan</h1>
-      <div style="font-size: 14px; color: var(--color-text-secondary)">
-        {{ formattedDate }}
-      </div>
+      <div class="date-text">{{ formattedDate }}</div>
     </div>
 
-    <!-- KPI Cards -->
-    <div class="kpi-grid" style="margin-bottom: 28px">
+    <div class="kpi-grid">
       <KpiCard
         v-for="kpi in kpiData"
         :key="kpi.id"
@@ -21,14 +17,10 @@
       />
     </div>
 
-    <!-- Cash Flow Chart -->
-    <div class="chart-container" style="margin-bottom: 28px">
-      <div class="chart-container__header">
+    <div class="chart-container mb-6">
+      <div class="chart-header">
         <div class="chart-container__title">Tren Arus Kas</div>
-        <select
-          class="filter-bar__select"
-          style="height: 34px; font-size: 13px"
-        >
+        <select class="filter-bar__select">
           <option>30 Hari Terakhir</option>
           <option>90 Hari Terakhir</option>
           <option>Tahun Ini</option>
@@ -65,7 +57,6 @@
         <DxLegend
           vertical-alignment="top"
           horizontal-alignment="center"
-          item-text-position="right"
           marker-size="12"
         />
         <DxTooltip
@@ -76,7 +67,6 @@
       </DxChart>
     </div>
 
-    <!-- Recent Transactions DataGrid -->
     <div class="table-container">
       <div class="table-container__header">
         <span class="table-container__title">Transaksi Terakhir</span>
@@ -89,7 +79,6 @@
         :data-source="recentTransactions"
         :show-borders="false"
         :show-row-lines="true"
-        :show-column-lines="false"
         :row-alternation-enabled="true"
         :hover-state-enabled="true"
         column-auto-width
@@ -129,18 +118,15 @@
 
 <script>
 import KpiCard from "../components/KpiCard.vue";
-import { ArrowRight } from "vue-feather-icons";
+import { ArrowRight } from "lucide-vue-next";
 import {
   kpiData,
   recentTransactions,
   cashFlowData,
   formatRupiahShort,
   formatRupiah,
-  formatDate,
   statusLabels,
 } from "../data/mockData";
-
-// DevExtreme components
 import {
   DxChart,
   DxSeries,
@@ -213,16 +199,29 @@ export default {
       const val = cellInfo.data.jumlah;
       const color = val >= 0 ? "#16A34A" : "#E53E3E";
       const sign = val >= 0 ? "+" : "";
-      return `<span style="font-weight:600;font-variant-numeric:tabular-nums;color:${color}">${sign}${formatRupiah(
-        val,
-      )}</span>`;
+      return `<span style="font-weight:600;font-variant-numeric:tabular-nums;color:${color}">${sign}${formatRupiah(val)}</span>`;
     },
     statusCellRender(cellInfo) {
       const status = cellInfo.data.status;
-      const label = this.statusLabels[status];
-      return `<span class="badge badge--${status}">${label}</span>`;
+      return `<span class="badge badge--${status}">${this.statusLabels[status]}</span>`;
     },
   },
 };
 </script>
 
+<style scoped>
+.date-text {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.chart-container__title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+</style>

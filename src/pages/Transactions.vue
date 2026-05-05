@@ -7,12 +7,11 @@
       </button>
     </div>
 
-    <div class="table-container" style="padding: 0">
+    <div class="table-container">
       <DxDataGrid
         :data-source="allTransactions"
         :show-borders="false"
         :show-row-lines="true"
-        :show-column-lines="false"
         :row-alternation-enabled="true"
         :hover-state-enabled="true"
         column-auto-width
@@ -31,17 +30,15 @@
         <DxSorting mode="multiple" />
         <DxSelection mode="multiple" show-check-boxes-mode="always" />
         <DxColumnChooser :enabled="true" mode="select" title="Pilih Kolom" />
-
         <DxToolbar>
           <DxItem name="searchPanel" />
           <DxItem name="columnChooserButton" />
-          <DxItem location="after">
-            <button class="btn btn--secondary btn--sm" @click="exportGrid">
+          <DxItem location="after"
+            ><button class="btn btn--secondary btn--sm" @click="exportGrid">
               <Download :size="16" /> Ekspor
-            </button>
-          </DxItem>
+            </button></DxItem
+          >
         </DxToolbar>
-
         <DxColumn
           data-field="id"
           caption="No"
@@ -80,7 +77,6 @@
           alignment="center"
           :cell-render="statusCellRender"
         />
-
         <DxPaging :default-page-size="10" />
         <DxPager
           :show-page-size-selector="true"
@@ -95,13 +91,12 @@
 </template>
 
 <script>
-import { Plus, Download } from "vue-feather-icons";
+import { Plus, Download } from "lucide-vue-next";
 import {
   recentTransactions,
   formatRupiah,
   statusLabels,
 } from "../data/mockData";
-
 import {
   DxDataGrid,
   DxColumn,
@@ -136,7 +131,6 @@ export default {
     DxColumnChooser,
   },
   data() {
-    // Gabungkan data
     const allTransactions = [
       ...recentTransactions,
       {
@@ -176,36 +170,26 @@ export default {
         status: "selesai",
       },
     ];
-    return {
-      allTransactions,
-      formatRupiah,
-      statusLabels,
-    };
+    return { allTransactions, formatRupiah, statusLabels };
   },
   methods: {
     exportGrid() {
-      // Implementasi ekspor
       console.log("Export grid");
     },
     amountCellRender(cellInfo) {
       const val = cellInfo.data.jumlah;
       const color = val >= 0 ? "#16A34A" : "#E53E3E";
       const sign = val >= 0 ? "+" : "";
-      return `<span style="font-weight:600;font-variant-numeric:tabular-nums;color:${color}">${sign}${formatRupiah(
-        val,
-      )}</span>`;
+      return `<span style="font-weight:600;color:${color}">${sign}${formatRupiah(val)}</span>`;
     },
     kategoriCellRender(cellInfo) {
       const isIncome = cellInfo.data.kategori === "Pemasukan";
       const badgeClass = isIncome ? "badge--selesai" : "badge--terlambat";
-      return `<span class="badge ${badgeClass}" style="font-size:11px">${cellInfo.data.kategori}</span>`;
+      return `<span class="badge ${badgeClass}">${cellInfo.data.kategori}</span>`;
     },
     statusCellRender(cellInfo) {
-      const status = cellInfo.data.status;
-      const label = this.statusLabels[status];
-      return `<span class="badge badge--${status}">${label}</span>`;
+      return `<span class="badge badge--${cellInfo.data.status}">${this.statusLabels[cellInfo.data.status]}</span>`;
     },
   },
 };
 </script>
-
