@@ -52,7 +52,7 @@ import {
   Settings,
   ChevronsLeft,
   ChevronsRight,
-} from "lucide-vue";
+} from "lucide-vue-next";
 
 export default {
   name: "Sidebar",

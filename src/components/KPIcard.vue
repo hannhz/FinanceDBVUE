@@ -25,7 +25,7 @@ import {
   CreditCard,
   Landmark,
   BadgeDollarSign,
-} from "lucide-vue";
+} from "lucide-vue-next";
 
 export default {
   name: "KpiCard",

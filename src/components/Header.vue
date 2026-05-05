@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { Search, Bell, ChevronDown } from "lucide-vue";
+import { Search, Bell, ChevronDown } from "lucide-vue-next";
 
 export default {
   name: "Header",
