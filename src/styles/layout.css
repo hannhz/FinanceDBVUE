@@ -11,6 +11,7 @@
 .app-layout__main {
   flex: 1;
   margin-left: var(--sidebar-width);
+  width: calc(100% - var(--sidebar-width));
   display: flex;
   flex-direction: column;
   transition: margin-left var(--transition-base);
@@ -18,12 +19,14 @@
 
 .app-layout__main--collapsed {
   margin-left: var(--sidebar-collapsed);
+  width: calc(100% - var(--sidebar-collapsed));
 }
 
 .app-layout__content {
   flex: 1;
   padding: 28px 32px;
   margin-top: var(--header-height);
+  min-width: 0;
   overflow-y: auto;
 }
 
@@ -58,7 +61,7 @@
 .sidebar__logo {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, var(--color-accent), #4FD1C5);
+  background: linear-gradient(135deg, var(--color-accent), #4fd1c5);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -235,6 +238,34 @@
 
 .header--collapsed {
   left: var(--sidebar-collapsed);
+}
+
+@media (max-width: 1024px) {
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .sidebar,
+  .sidebar--collapsed {
+    position: sticky;
+    width: 100%;
+    height: auto;
+  }
+
+  .app-layout__main,
+  .app-layout__main--collapsed {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .header,
+  .header--collapsed {
+    left: 0;
+  }
+
+  .app-layout__content {
+    margin-top: 0;
+  }
 }
 
 .header__search {

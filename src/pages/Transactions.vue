@@ -1,5 +1,5 @@
 ﻿<template>
-  <div>
+  <div class="transactions-page">
     <div class="page-header">
       <h1 class="page-title">Manajemen Transaksi</h1>
       <button class="btn btn--primary">
@@ -8,7 +8,41 @@
     </div>
 
     <div class="table-container">
+      <div class="transactions-toolbar">
+        <label class="transactions-toolbar__search">
+          <Search class="transactions-toolbar__search-icon" :size="16" />
+          <input
+            v-model="searchQuery"
+            type="text"
+            class="transactions-toolbar__search-input"
+            placeholder="Cari deskripsi, klien..."
+            @input="applySearch"
+          />
+        </label>
+
+        <div class="transactions-toolbar__actions">
+          <button
+            class="btn btn--secondary btn--sm transactions-toolbar__action"
+            type="button"
+            @click="openColumnChooser"
+          >
+            <Columns3 :size="16" />
+            Pilih Kolom
+          </button>
+
+          <button
+            class="btn btn--secondary btn--sm transactions-toolbar__action"
+            type="button"
+            @click="exportGrid"
+          >
+            <Download :size="16" />
+            Ekspor
+          </button>
+        </div>
+      </div>
+
       <DxDataGrid
+        ref="transactionsGrid"
         :data-source="allTransactions"
         :show-borders="false"
         :show-row-lines="true"
@@ -22,23 +56,9 @@
       >
         <DxFilterRow :visible="true" />
         <DxHeaderFilter :visible="true" />
-        <DxSearchPanel
-          :visible="true"
-          placeholder="Cari deskripsi, klien..."
-          :width="280"
-        />
         <DxSorting mode="multiple" />
         <DxSelection mode="multiple" show-check-boxes-mode="always" />
         <DxColumnChooser :enabled="true" mode="select" title="Pilih Kolom" />
-        <DxToolbar>
-          <DxItem name="searchPanel" />
-          <DxItem name="columnChooserButton" />
-          <DxItem location="after"
-            ><button class="btn btn--secondary btn--sm" @click="exportGrid">
-              <Download :size="16" /> Ekspor
-            </button></DxItem
-          >
-        </DxToolbar>
         <DxColumn
           data-field="id"
           caption="No"
@@ -91,7 +111,7 @@
 </template>
 
 <script>
-import { Plus, Download } from "lucide-vue-next";
+import { Plus, Search, Columns3, Download } from "lucide-vue-next";
 import {
   recentTransactions,
   formatRupiah,
@@ -105,9 +125,6 @@ import {
   DxSorting,
   DxFilterRow,
   DxHeaderFilter,
-  DxSearchPanel,
-  DxToolbar,
-  DxItem,
   DxSelection,
   DxColumnChooser,
 } from "devextreme-vue/data-grid";
@@ -116,6 +133,8 @@ export default {
   name: "Transactions",
   components: {
     Plus,
+    Search,
+    Columns3,
     Download,
     DxDataGrid,
     DxColumn,
@@ -124,9 +143,6 @@ export default {
     DxSorting,
     DxFilterRow,
     DxHeaderFilter,
-    DxSearchPanel,
-    DxToolbar,
-    DxItem,
     DxSelection,
     DxColumnChooser,
   },
@@ -170,9 +186,20 @@ export default {
         status: "selesai",
       },
     ];
-    return { allTransactions, formatRupiah, statusLabels };
+    return {
+      allTransactions,
+      formatRupiah,
+      statusLabels,
+      searchQuery: "",
+    };
   },
   methods: {
+    applySearch() {
+      this.$refs.transactionsGrid?.instance?.searchByText(this.searchQuery);
+    },
+    openColumnChooser() {
+      this.$refs.transactionsGrid?.instance?.showColumnChooser();
+    },
     exportGrid() {
       console.log("Export grid");
     },
@@ -193,3 +220,117 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.transactions-page {
+  margin-top: -8px;
+}
+
+.transactions-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+  flex-wrap: nowrap;
+}
+
+.transactions-toolbar__search {
+  position: relative;
+  flex: 1 1 320px;
+  max-width: 420px;
+}
+
+.transactions-toolbar__search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.transactions-toolbar__search-input {
+  width: 100%;
+  height: 42px;
+  padding: 0 16px 0 40px;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.transactions-toolbar__search-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.transactions-toolbar__search-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-50);
+}
+
+.transactions-toolbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.transactions-toolbar__action {
+  min-height: 42px;
+}
+
+.transactions-page :deep(.page-header) {
+  margin-bottom: 18px;
+}
+
+.transactions-page :deep(.page-title) {
+  font-size: 1.6rem;
+}
+
+.transactions-page :deep(.btn--primary) {
+  min-height: 42px;
+  padding: 0 20px;
+}
+
+.transactions-page :deep(.table-container) {
+  margin-top: 0;
+}
+
+.transactions-page :deep(.dx-datagrid-headers) {
+  border-top: 1px solid var(--color-border-light);
+}
+
+@media (max-width: 1024px) {
+  .transactions-page {
+    margin-top: -4px;
+  }
+
+  .transactions-page :deep(.page-header) {
+    margin-bottom: 14px;
+  }
+
+  .transactions-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .transactions-toolbar__search {
+    max-width: none;
+    flex-basis: auto;
+  }
+
+  .transactions-toolbar__actions {
+    width: 100%;
+  }
+
+  .transactions-toolbar__action {
+    flex: 1;
+  }
+}
+</style>
